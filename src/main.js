@@ -5,6 +5,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 
+///import firebase from 'firebase/compat/app'
+///import '@/datasources/firebase'
+
 Vue.config.productionTip = false
 
 new Vue({

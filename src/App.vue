@@ -5,18 +5,19 @@
 -->
 <template>
   <v-app>
-    <!--웹: drawer 나와있어 / 앱: 햄버거 클릭해야 나와-->
+    <!--웹: drawer 나와있어 / 앱: 햄버거 클릭해야 나와
+
     <v-navigation-drawer app v-model="drawer">
       <v-list>
-        <!--로그인전: 로그인 -->
-        <v-list-item v-for="item in fnGetMenuItems" :key="item.index" :to="item.to">
+        로그인전: 로그인, 회원가입
+        <v-list-item v-for="item in fnGetMenuItems" :key="item.index" :to="item.to" @click="dialog = true">
           <v-list-item-action>
             <v-icon v-html="item.icon"></v-icon>
           </v-list-item-action>
           <v-list-item-title v-text="item.title"></v-list-item-title>
         </v-list-item>
 
-        <!--/ 로그인후: 로그아웃, 등록하기-->
+        로그인후: 로그아웃, 등록하기
         <v-list-item @click="fnDoLogout" v-if="fnGetAuthStatus">
           <v-list-item-action>
             <v-icon>mdi-logout</v-icon>
@@ -25,9 +26,36 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+    -->
 
-    <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <!--
+    <v-dialog v-model="dialog" persistent width="auto">
+      <v-card width=""  class="mx-auto">
+        <v-card-title class="py-5 text-h5">로그인</v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="12"><v-text-field label="아이디"></v-text-field></v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" sm="6" md="12"><v-text-field label="비밀번호"></v-text-field></v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="outlined" class="py-5" @click="dialog=false" align-center>로그인</v-btn>
+/        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  -->
+
+    <!--메인페이지X:홈버튼(메인으로링크) / 메인페이지O:햄버거-->
+    <v-app-bar app density="compact">
+      <router-link to="/">
+        <v-btn icon>
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </router-link>
       <v-spacer></v-spacer>
       <v-btn icon @click="fnOpenPost">
         <v-icon>search</v-icon>
@@ -56,6 +84,7 @@ export default {
   data(){
     return{
       drawer: true,
+      dialog: false
     }
   },
   computed: {
@@ -69,7 +98,7 @@ export default {
         return [
           {
             title: '로그인',
-            to: '/login',
+            //to: '/login',
             icon: 'mdi-login'
           },
           {
@@ -80,7 +109,12 @@ export default {
       ]
       } else{
         return [
-        {
+          {
+            title: '로그아웃',
+            to: '',
+            icon: 'mdi-logout'
+          },
+          {
             title: '등록하기',
             to: '/add',
             icon: 'mdi-plus'
@@ -91,7 +125,9 @@ export default {
   },
   methods: {
   ///로그아웃
-  ///fnDoLogout(){},
+  fnDoLogout(){
+    return this.$store.getters.fnGetAuthStatus
+  },
 
   /// 주소찾기 팝업
   fnOpenPost(){

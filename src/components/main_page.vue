@@ -1,6 +1,9 @@
 <template>
     <div>
         <div id="map"></div>
+        <v-btn @click="$router.push('add_page')" color="" dark fixed bottom right fab>
+                <v-icon>add</v-icon>
+        </v-btn>
     </div>
 </template>
 <style scope>
@@ -10,16 +13,14 @@
     }
 </style>
 <script>
-import data from '../toilet.json'
-
-const toiletData = data;
+// import Sdata from '@/assets/seoul_toilet.json'
 
 /* https://soa-memo.tistory.com/m/41 참조 */
 export default{
     data(){
         return{
             map: null,
-            toiletData
+            // Sdata: []
         }
     },
     mounted(){
@@ -31,6 +32,17 @@ export default{
             this.loadScript();
         }
     },
+    /*
+    computed:{
+        toilets(){
+            return Sdata.map((items)=>{
+                let latlng = items.y_wgs84 +', '+ items.x_wgs84
+                items['latlng'] = items
+                return items
+            })
+        }
+    },
+    */
     methods: {
         loadScript(){
             const script = document.createElement('script');
@@ -47,12 +59,89 @@ export default{
             const options = {
                 /// 지도 생성 시 기본옵션
                 /// center: 지도의 중심좌표, level: 확대/축소 정도
-                center: new window.kakao.maps.LatLng(37.658218, 126.774285),
-                level: 3
+                center: new window.kakao.maps.LatLng(37.54134, 126.96213), 
+                level: 9,       
             };
 
             /// 지도 생성 및 객체 리턴
             this.map = new window.kakao.maps.Map(container, options);
+
+            /// 데이터 : 1~1000 (총 데이터 양: 4938)
+            const url = "http://openapi.seoul.go.kr:8088/454b476547636f6634354653574c7a/json/SearchPublicToiletPOIService/1/1000/"
+
+            fetch(url)
+            .then((res)=>res.json())
+            .then((myJson) => {
+                //var markers = []
+                //const toilets = JSON.stringify(myJson, null, 1)
+                //console.log(typeof myJson)
+                const toilets = myJson.SearchPublicToiletPOIService.row
+                console.log(toilets)
+
+                //마커 이미지
+                var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+
+                for(var i=0; i< toilets.length; i++){
+                    const latlng = new kakao.maps.LatLng(toilets[i].Y_WGS84, toilets[i].X_WGS84)
+                    var imgSize = new kakao.maps.Size(24,35)
+                    var markerImg = new kakao.maps.MarkerImage(imgSrc, imgSize)
+
+                    var marker = new kakao.maps.Marker({
+                        position: latlng,
+                        map:this.map,
+                        image: markerImg,
+                        title: toilets[i].FNAME
+                    })
+                    //markers
+                    //push(marker)
+                }
+            })
+
+            var positions = []
+
+            
+
+            /*
+            for (var i=0; i <positions.length; i++){
+                var imgSize = new kakao.maps.Size(24, 35)
+                
+                var markerImage = new kakao.maps.MarkerImage(imgSrc, imgSize)
+
+                var marker = new kakao.maps.Marker({
+                    map: map, 
+                    position: new kakao.maps.LatLng(toilets[i].Y_WGS84, toilets[i].X_WGS84),
+                    image: markerImage
+                })
+            }
+            */
+
+            //geolocation 이용해서 접속 위치
+            /*
+            if(navigator, geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position){
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    var locPosition = new kakao.maps.LatLng(lat, lon)
+
+                    displayMarker(locPosition);
+                });
+            } else{ //geolocation 사용할 수 없을 때 나타낼 마커
+                var locPosition = new kakao.maps.LatLng(37.589314, 126.986809)
+
+                displayMarker(locPosition)
+            }
+
+            //지도에 마커 표시
+            function displayMarker(locPosition){
+                var marker = new kakao.maps.Marker({
+                    map: this.map,
+                    position: locPosition
+                });
+
+                map.setCenter(locPosition)
+            }
+            */
 
             ///데이터 한땀한땀
             /*
@@ -137,6 +226,6 @@ export default{
             */
 
         }
-    }
+    },
 }
 </script>
