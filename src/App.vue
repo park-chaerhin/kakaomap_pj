@@ -1,12 +1,6 @@
-<!--URL 등록
-  https://oepnapi.gg.go.kr/UndergroundWaterConstruct?KEY=sample&pIndex=1&pSize=50&SIGUN_CD=41310
-  https://[openAPI URL]/[openAPI 이름]?[인증키 값]&[페이지위치]&[페이지당 요청 수]&[요청인자]
-  https://openapi.gg.go.kr/Publtolt?
--->
 <template>
   <v-app>
-    <!--웹: drawer 나와있어 / 앱: 햄버거 클릭해야 나와
-
+  <!--웹: drawer 나와있어 / 앱: 햄버거 클릭해야 나와
     <v-navigation-drawer app v-model="drawer">
       <v-list>
         로그인전: 로그인, 회원가입
@@ -26,9 +20,10 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    -->
+  -->
 
-    <!--
+
+  <!-- 로그인 dialog 화면?
     <v-dialog v-model="dialog" persistent width="auto">
       <v-card width=""  class="mx-auto">
         <v-card-title class="py-5 text-h5">로그인</v-card-title>
@@ -44,12 +39,12 @@
         </v-card-text>
         <v-card-actions>
           <v-btn variant="outlined" class="py-5" @click="dialog=false" align-center>로그인</v-btn>
-/        </v-card-actions>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   -->
 
-    <!--메인페이지X:홈버튼(메인으로링크) / 메인페이지O:햄버거-->
+  <!--메인페이지X:홈버튼(메인으로링크) / 메인페이지O:햄버거-->
     <v-app-bar app density="compact">
       <router-link to="/">
         <v-btn icon>
@@ -136,15 +131,20 @@ export default {
     new window.daum.Postcode({
       oncomplete: function(data) {
         /// 팝업에서 검색결과 항목을 클릭했을 때 실행할 코드 작성 부분
-        var addr = data.address;
+        var addr = data.address; //최종 주소 변수
         var geocoder = new daum.maps.services.Geocoder();
 
         geocoder.addressSearch(addr, function(status){
+          /// 정상적으로 검색이 끝나면
           if(status === daum.maps.services.Status.OK) {
+            /// 첫번째 결과의 값을 활용
             var result = results[0];
+            /// 해당 주소에 대한 좌표 받아서
             var coords = new daum.maps.LatLng(result.y, result.x)
+            /// 지도 보여주기
             mapContainer.style.display = 'block';
             map.relayout();
+            /// 지도 중심 변경
             map.setCenter(coords);
           }
         })

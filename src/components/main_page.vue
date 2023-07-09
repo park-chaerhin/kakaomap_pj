@@ -47,7 +47,7 @@ export default{
         loadScript(){
             const script = document.createElement('script');
             /// API로드 후 맵 그리는 함수 실행, 동적으로 script 로딩하기 위해 autoload=false 옵션지정!
-            script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=a94b20af546ccbc16088bd33eaf12dc5&autoload=false';
+            script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=a94b20af546ccbc16088bd33eaf12dc5&autoload=false&libraries=services';
             /// 스크립트 로드 후 지도 실행
             script.onload = () => window.kakao.maps.load(this.loadMap);
             
