@@ -1,10 +1,33 @@
 <template>
-    <div>
-        <div id="map"></div>
-        <v-btn @click="$router.push('add_page')" color="" dark fixed bottom right fab>
+    <v-app>
+    <v-app-bar app density="compact">
+      <router-link to="/">
+        <v-btn icon>
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </router-link>
+      <v-spacer></v-spacer>
+      <div v-if="$route.name=='main_page'" style="display: flex;">
+        <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
+        <v-btn icon @click="fnOpenPost" value="주소검색" large >
+          <v-icon>search</v-icon>
+        </v-btn>
+        <v-btn icon @click="getCurrentPos" large>
+          <v-icon>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+      </div>
+    </v-app-bar>
+
+    <!-- <v-main id="map">
+    </v-main> -->
+
+    <!--<div>-->
+        <v-main id="map"></v-main>
+        <v-btn @click="$router.push('add')" color="" dark fixed bottom right fab>
                 <v-icon>add</v-icon>
         </v-btn>
-    </div>
+    <!--</div>-->
+</v-app>
 </template>
 <style scope>
     #map{
@@ -19,7 +42,7 @@
 export default{
     data(){
         return{
-            map: null,
+            //// map: null,
             // Sdata: []
         }
     },
@@ -44,6 +67,55 @@ export default{
     },
     */
     methods: {
+        /// 주소찾기 팝업
+        fnOpenPost(){
+            /// window.open()이 동작 안 할 수도 있어 >> 하이브리드앱 개발 :  }).open() - 바꿔 -> }).embed(this.$refs.embed)
+            new window.daum.Postcode({
+                oncomplete: function(data) {
+                    var mapContainer = document.getElementById('map')
+                    var mapOptions = {
+                        center : new daum.maps.LatLng(37.54134, 126.96213),
+                        level: 5
+                    }
+
+                    var map = new daum.maps.Map(mapContainer, mapOptions)
+
+                    //최종 주소 변수
+                    var addr = data.address; 
+                    // document.getElementById('address').value = addr
+
+                    //주소-좌표 변환 객체 생성
+                    var geocoder = new daum.maps.services.Geocoder();
+
+                    var marker = new kakao.maps.Marker({
+                    //   imageSrc :"https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png" ,
+                    //   imgSize: new kakao.maps.Size(24,35),
+                    position: new daum.maps.LatLng(37.54134, 126.96213),
+                    map: this.map,
+                    //   image: new kakao.maps.MarkerImage(imageSrc, imgSize)
+                    })
+
+        
+
+                    geocoder.addressSearch(addr, function(results, status){
+                    /// 정상적으로 검색이 끝나면
+                    if(status === daum.maps.services.Status.OK) {
+                        /// 첫번째 결과의 값을 활용
+                        var result = results[0];
+                        /// 해당 주소에 대한 좌표 받아서
+                        var coords = new daum.maps.LatLng(result.y, result.x)
+                        /// 지도 보여주기
+                        // mapContainer.style.display = 'block';
+                        map.relayout();
+                        /// 지도 중심 변경
+                        map.setCenter(coords);
+                        // marker.setPosition(coords)
+                    }
+                    })
+                }
+            }).open();
+        },
+
         loadScript(){
             const script = document.createElement('script');
             /// API로드 후 맵 그리는 함수 실행, 동적으로 script 로딩하기 위해 autoload=false 옵션지정!
@@ -54,6 +126,7 @@ export default{
             /// html head안에 스크립트 추가
             document.head.appendChild(script);
         },
+
         loadMap(){
             const container = document.getElementById('map');
             const options = {
@@ -65,6 +138,11 @@ export default{
 
             /// 지도 생성 및 객체 리턴
             this.map = new window.kakao.maps.Map(container, options);
+
+            /*
+            주소-좌표 변환 객체 생성
+            var geocoder = new daum.maps.services.Geocoder();
+            */
 
             /// 데이터 : 1~1000 (총 데이터 양: 4938)
             const url = "http://openapi.seoul.go.kr:8088/454b476547636f6634354653574c7a/json/SearchPublicToiletPOIService/1/1000/"
@@ -92,8 +170,8 @@ export default{
                         image: markerImg,
                         title: toilets[i].FNAME
                     })
-                    //markers
-                    //push(marker)
+                    // markers
+                    //marker.push()
                 }
             })
 
@@ -225,7 +303,32 @@ export default{
             }
             */
 
-        }
+        },
+
+        getCurrentPos(){
+            if (navigator.geolocation){
+
+            navigator.geolocation.getCurrentPosition(function(position){
+                var lat = position.coords.latitude
+                var lon = position.coords.longitude
+
+                var locPosition = new kakao.maps.LatLng(lat, lon)
+
+                marker.setPosition(locPosition)
+                map.setCenter(locPosition)
+            })
+            } else{
+            var locPosition = new kakao.maps.LatLng(37.54134, 126.96213)
+            var message = '현재 위치를 알 수 없어 기본 위치로 이동합니다'
+
+            currentLatLon['lat'] = 37.54134
+            currentLatLon['lon'] = 126.96213
+
+            marker.setPosition(locPosition)
+            }
+            return true
+        },
+
     },
 }
 </script>
