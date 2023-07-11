@@ -1,14 +1,29 @@
 <template>
     <v-container>
+        <v-toolbar flat color="blue">
+            <v-toolbar-title>
+                    <span class="mx-auto">화장실 추가</span>
+            </v-toolbar-title>
+        </v-toolbar>
         <v-row>
-            위치
-            <v-text-field id="s_addr" value="주소검색"></v-text-field>
-            <v-btn @click="s_Postcode()">검색</v-btn>
+            <v-col cols="12" sm="6">
+                <v-text-field label="주소"></v-text-field>
+                <v-btn>검색</v-btn>
+            </v-col>
+            <v-col cols="12" sm="6">
+                <v-text-field label="장소이름"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+                <v-textarea label="설명"></v-textarea>
+            </v-col>
+            <v-col cols="12">
+                <v-checkbox label="male" value="male"></v-checkbox>
+                <v-checkbox label="female" value="female"></v-checkbox>
+            </v-col>
+            <v-col cols="12">
+                <v-btn type="submit">등록</v-btn>
+            </v-col>
         </v-row>
-        <div id="view" style="width:100vw;height: 10vh;display: none;"></div>
-        장소이름 <v-text-field></v-text-field>
-        설명 <v-textarea variant="outlined"></v-textarea>
-        <v-btn type="submit"></v-btn>
     </v-container>
 </template>
 

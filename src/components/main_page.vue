@@ -1,31 +1,88 @@
 <template>
     <v-app>
-    <v-app-bar app density="compact">
-      <router-link to="/">
-        <v-btn icon>
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-      </router-link>
-      <v-spacer></v-spacer>
-      <div v-if="$route.name=='main_page'" style="display: flex;">
-        <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
-        <v-btn icon @click="fnOpenPost" value="주소검색" large >
-          <v-icon>search</v-icon>
-        </v-btn>
-        <v-btn icon @click="getCurrentPos" large>
-          <v-icon>mdi-crosshairs-gps</v-icon>
-        </v-btn>
-      </div>
-    </v-app-bar>
+        <v-app-bar app density="compact">
+            <router-link to="/">
+                <v-btn icon>
+                <v-icon>mdi-home</v-icon>
+                </v-btn>
+            </router-link>
+            <v-spacer></v-spacer>
+            <div v-if="$route.name=='main_page'" style="display: flex;">
+                <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
+                <v-btn icon @click="fnOpenPost" value="주소검색" large >
+                <v-icon>search</v-icon>
+                </v-btn>
+                <v-btn icon @click="getCurrentPos" large>
+                <v-icon>mdi-crosshairs-gps</v-icon>
+                </v-btn>
+            </div>
+        </v-app-bar>
 
     <!-- <v-main id="map">
     </v-main> -->
 
     <!--<div>-->
         <v-main id="map"></v-main>
-        <v-btn @click="$router.push('add')" color="" dark fixed bottom right fab>
+            
+        <v-row justify="center">
+            <v-dialog v-model="dialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
+                <template v-slot:activator="{props}">
+                    <v-btn @click="dialog=true" color="primary" dark fixed bottom right fab>
+                        <v-icon>add</v-icon>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-toolbar dark color="primary">
+                        <v-btn icon dark @click="dialog=false">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-spacer></v-spacer>
+                        <v-toolbar-title>장소등록</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-toolbar-items>
+                            <v-btn icon variant="text" @click="dialog=false" fab>등록</v-btn>
+                        </v-toolbar-items>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="10">
+                                    <v-text-field label="주소"></v-text-field>
+                                </v-col>
+                                <v-btn class="mt-5">검색</v-btn>
+                                
+                                <v-col cols="12">
+                                    <v-text-field label="장소이름" required></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-textarea label="설명"></v-textarea>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-autocomplete :items="['남','여','남/여']" label="성별"></v-autocomplete>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <!--
+                    <v-list>
+                        <v-list-item title="Female">
+                            <template v-slot:prepend>
+                                <v-checkbox v-model="Female"></v-checkbox>
+                            </template>
+                        </v-list-item>
+                        <v-list-item title="Male">
+                            <template v-slot:prepend>
+                                <v-checkbox v-model="Male"></v-checkbox>
+                            </template>
+                        </v-list-item>
+                    </v-list>
+                    -->
+                </v-card>
+            </v-dialog>
+        </v-row>
+        <!--<v-btn @click="$router.push('add')" color="" dark fixed bottom right fab>
                 <v-icon>add</v-icon>
-        </v-btn>
+        </v-btn>-->
     <!--</div>-->
 </v-app>
 </template>
@@ -33,6 +90,10 @@
     #map{
         width: 100vw;
         height: 100vh;
+    }
+    .dialog-bottom-transition-enter-active,
+    .dialog-bottom-transition-leave-active{
+        transition: transform .2s ease-in-out;
     }
 </style>
 <script>
@@ -42,6 +103,7 @@
 export default{
     data(){
         return{
+            dialog: false,
             //// map: null,
             // Sdata: []
         }
@@ -133,7 +195,7 @@ export default{
                 /// 지도 생성 시 기본옵션
                 /// center: 지도의 중심좌표, level: 확대/축소 정도
                 center: new window.kakao.maps.LatLng(37.54134, 126.96213), 
-                level: 9,       
+                level: 5,       
             };
 
             /// 지도 생성 및 객체 리턴
