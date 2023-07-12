@@ -26,11 +26,16 @@ const routes = [
       name: 'add_page',
       component: () => import('../components/add_page.vue')
       ,
-      /*
-      인증결과가 true여야 등록페이지 갈 수 있어
-      -> 비정상적 접근 : 로그인 페이지로 유도 (router.beforeEach()에 정의)
-      meta: {bAuth: true}  
-      */
+        /*
+        인증결과가 true여야 등록페이지 갈 수 있어
+        -> 비정상적 접근 : 로그인 페이지로 유도 (router.beforeEach()에 정의)
+        meta: {bAuth: true}  
+        */
+    },
+    {
+      path: '/detail',
+      name: 'detail_page',
+      component: () => import('../components/detail_page.vue')
     },
   ]
 
