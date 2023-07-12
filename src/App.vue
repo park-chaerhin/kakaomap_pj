@@ -29,17 +29,19 @@
 
 <script>
 import Main from './components/main_page.vue'
-import Login from './components/login_page.vue'
-import Join from './components/join_page.vue'
 import Add from './components/add_page.vue'
+import Detail from './components/detail_page.vue'
+// import Login from './components/login_page.vue'
+// import Join from './components/join_page.vue'
 
 export default {
   name: 'App',
   components: {
     Main,
-    Login,
-    Join,
-    Add
+    // Login,
+    // Join,
+    Detail,
+    Add,
   },
   data(){
     return{
