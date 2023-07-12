@@ -1,3 +1,7 @@
+<!--
+    1. geolocation 수정
+    2. 장소 추가 '등록'하면 
+-->
 <template>
     <v-app>
         <v-app-bar app density="compact">
@@ -9,7 +13,8 @@
             <v-spacer></v-spacer>
             <div v-if="$route.name=='main_page'" style="display: flex;">
                 <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
-                <v-btn icon @click="fnOpenPost" value="주소검색" large >
+                <!--<v-btn icon @click="fnOpenPost" value="주소검색" large >-->
+                <v-btn icon value="주소검색" large >
                 <v-icon>search</v-icon>
                 </v-btn>
                 <v-btn icon @click="getCurrentPos" large>
@@ -21,9 +26,14 @@
     <!-- <v-main id="map">
     </v-main> -->
 
-    <!--<div>-->
-        <v-main id="map"></v-main>
-            
+        <!--지도 나타낼 부분-->
+        <v-main id="map">
+        <v-btn @click="fnGo" color="primary" dark fixed bottom right fab>
+            <v-icon>add</v-icon>
+        </v-btn>
+    </v-main>
+    
+        <!--장소추가 페이지 : dialog
         <v-row justify="center">
             <v-dialog v-model="dialog" fullscreen :scrim="false" transition="dialog-bottom-transition">
                 <template v-slot:activator="{props}">
@@ -40,52 +50,33 @@
                         <v-toolbar-title>장소등록</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-toolbar-items>
-                            <v-btn icon variant="text" @click="dialog=false" fab>등록</v-btn>
+                            <v-btn type="submit" icon variant="text" @click="dialog=false, validate" fab :disabled="!valid">등록</v-btn>
                         </v-toolbar-items>
                     </v-toolbar>
-                    <v-card-text>
+                    <v-form  @submit.prevent="submit" ref="form">
                         <v-container>
                             <v-row>
                                 <v-col cols="10">
-                                    <v-text-field label="주소"></v-text-field>
+                                    <v-text-field id="s_addr" label="주소" ></v-text-field>
                                 </v-col>
-                                <v-btn class="mt-5">검색</v-btn>
+                                <v-btn type="button" class="mt-5" @click="staticOpenpost()">검색</v-btn>
+                                <div id="staticMap" style="width:300px;height:300px;margin-top:10px;display:none"></div>
                                 
                                 <v-col cols="12">
-                                    <v-text-field label="장소이름" required></v-text-field>
+                                    <v-text-field label="장소이름" v-model="form.t_name" required :rules="[rule.required]"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-textarea label="설명"></v-textarea>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-autocomplete :items="['남','여','남/여']" label="성별"></v-autocomplete>
+                                    <v-textarea clearable label="설명" v-model="form.t_cont" :rules="[rule.required]"></v-textarea>
                                 </v-col>
                             </v-row>
                         </v-container>
-                    </v-card-text>
-                    <!--
-                    <v-list>
-                        <v-list-item title="Female">
-                            <template v-slot:prepend>
-                                <v-checkbox v-model="Female"></v-checkbox>
-                            </template>
-                        </v-list-item>
-                        <v-list-item title="Male">
-                            <template v-slot:prepend>
-                                <v-checkbox v-model="Male"></v-checkbox>
-                            </template>
-                        </v-list-item>
-                    </v-list>
-                    -->
+                    </v-form>
                 </v-card>
             </v-dialog>
-        </v-row>
-        <!--<v-btn @click="$router.push('add')" color="" dark fixed bottom right fab>
-                <v-icon>add</v-icon>
-        </v-btn>-->
-    <!--</div>-->
-</v-app>
+        </v-row>-->
+    </v-app>
 </template>
+
 <style scope>
     #map{
         width: 100vw;
@@ -106,6 +97,17 @@ export default{
             dialog: false,
             //// map: null,
             // Sdata: []
+
+            //validation
+            form: {
+                // t_addr:'',
+                t_name:'',
+                t_cont:'',
+            },
+            rule:{
+                required: v => !!v || '필수 항목입니다.',
+            },
+            valid: false,
         }
     },
     mounted(){
@@ -117,6 +119,7 @@ export default{
             this.loadScript();
         }
     },
+
     /*
     computed:{
         toilets(){
@@ -128,8 +131,13 @@ export default{
         }
     },
     */
+    
     methods: {
-        /// 주소찾기 팝업
+        fnGo(){
+            this.$router.push({ name: "main_page" })
+        },
+        /// app-bar 주소찾기 팝업
+        /* 
         fnOpenPost(){
             /// window.open()이 동작 안 할 수도 있어 >> 하이브리드앱 개발 :  }).open() - 바꿔 -> }).embed(this.$refs.embed)
             new window.daum.Postcode({
@@ -153,7 +161,7 @@ export default{
                     //   imageSrc :"https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png" ,
                     //   imgSize: new kakao.maps.Size(24,35),
                     position: new daum.maps.LatLng(37.54134, 126.96213),
-                    map: this.map,
+                    map:this.map2,
                     //   image: new kakao.maps.MarkerImage(imageSrc, imgSize)
                     })
 
@@ -168,16 +176,63 @@ export default{
                         var coords = new daum.maps.LatLng(result.y, result.x)
                         /// 지도 보여주기
                         // mapContainer.style.display = 'block';
-                        map.relayout();
+                        // map.relayout();
                         /// 지도 중심 변경
                         map.setCenter(coords);
+                        
                         // marker.setPosition(coords)
+                        
                     }
                     })
                 }
             }).open();
         },
+        */
+        
+        /// dialog 주소찾기
+        staticOpenpost(){
+            new window.daum.Postcode({
+                oncomplete: function(data){
+                    var Container = document.getElementById('staticMap')
+                    var Option = {
+                        center: new daum.maps.LatLng(37.54134, 126.96213),
+                        level: 5
+                    }
+                    
+                    var map = new daum.maps.Map(Container, Option)
+                    var geocoder = new daum.maps.services.Geocoder()
 
+                    var marker = new daum.maps.Marker({
+                        position: new daum.maps.LatLng(37.54134, 126.96213),
+                        map: map
+                    })
+
+                    var addr = data.address
+
+                    document.getElementById('s_addr').value = addr
+                    geocoder.addressSearch(data.address, function(results, status){
+                        if(status === daum.maps.services.Status.OK){
+                            var result = results[0]
+                            var coords = new daum.maps.LatLng(result.y, result.x)
+                            Container.style.display = 'block'
+                            map.relayout()
+                            map.setCenter(coords)
+                            marker.setPosition(coords)
+                        }
+                    })
+                }
+            }).open()
+        },
+        
+
+        /// 유효성 검사
+        async validate () {
+            const { valid } = await this.$refs.form.validate()
+            console.log(valid)
+            if (valid) alert('Ok')
+        },
+
+        /// 스크립트에 지도api 추가
         loadScript(){
             const script = document.createElement('script');
             /// API로드 후 맵 그리는 함수 실행, 동적으로 script 로딩하기 위해 autoload=false 옵션지정!
@@ -189,6 +244,7 @@ export default{
             document.head.appendChild(script);
         },
 
+        /// #main에 지도 띄우기
         loadMap(){
             const container = document.getElementById('map');
             const options = {
@@ -199,8 +255,36 @@ export default{
             };
 
             /// 지도 생성 및 객체 리턴
-            this.map = new window.kakao.maps.Map(container, options);
+            this.map2 = new window.kakao.maps.Map(container, options);
+            
+            //장소검색객체
+            var ps = new kakao.maps.services.Places(); 
+            
+            ps.keywordSearch('강남역', placesSearchCB);
 
+            function placesSearchCB (data, status, pagination) {
+                if (status === kakao.maps.services.Status.OK) {
+
+                    var bounds = new kakao.maps.LatLngBounds();
+
+                    for (var i=0; i<data.length; i++) {
+                        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                    }       
+
+                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                    map.setBounds(bounds);
+                } 
+            }
+
+            // function displayMarker(place) {
+        
+            //     //마커를 생성하고 지도에 표시합니다
+            //     var marker = new kakao.maps.Marker({
+            //         map: map,
+            //         position: new kakao.maps.LatLng(place.y, place.x) 
+            //     });
+
+            // }
             /*
             주소-좌표 변환 객체 생성
             var geocoder = new daum.maps.services.Geocoder();
@@ -216,7 +300,7 @@ export default{
                 //const toilets = JSON.stringify(myJson, null, 1)
                 //console.log(typeof myJson)
                 const toilets = myJson.SearchPublicToiletPOIService.row
-                console.log(toilets)
+                //console.log(toilets)
 
                 //마커 이미지
                 var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
@@ -228,8 +312,9 @@ export default{
 
                     var marker = new kakao.maps.Marker({
                         position: latlng,
-                        map:this.map,
+                        map:this.map2,
                         image: markerImg,
+                        
                         title: toilets[i].FNAME
                     })
                     // markers
@@ -237,7 +322,7 @@ export default{
                 }
             })
 
-            var positions = []
+            //var positions = []
 
             
 
@@ -375,18 +460,22 @@ export default{
                 var lon = position.coords.longitude
 
                 var locPosition = new kakao.maps.LatLng(lat, lon)
+                ///console.log(locPosition)
+                if (locPosition.La !== current.La && locPosition.Ma !== current.Ma){
+                    console.log(locPosition, current)
+                }
 
-                marker.setPosition(locPosition)
+                //marker.setPosition(locPosition)
                 map.setCenter(locPosition)
             })
             } else{
-            var locPosition = new kakao.maps.LatLng(37.54134, 126.96213)
-            var message = '현재 위치를 알 수 없어 기본 위치로 이동합니다'
+                var locPosition = new kakao.maps.LatLng(37.54134, 126.96213)
+                var message = '현재 위치를 알 수 없어요..'
 
-            currentLatLon['lat'] = 37.54134
-            currentLatLon['lon'] = 126.96213
+                // currentLatLon['lat'] = 37.54134
+                // currentLatLon['lon'] = 126.96213
 
-            marker.setPosition(locPosition)
+                //marker.setPosition(locPosition)
             }
             return true
         },
