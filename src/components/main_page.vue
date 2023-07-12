@@ -14,24 +14,25 @@
             <div v-if="$route.name=='main_page'" style="display: flex;">
                 <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
                 <!--<v-btn icon @click="fnOpenPost" value="주소검색" large >-->
-                <v-btn icon value="주소검색" large >
-                <v-icon>search</v-icon>
-                </v-btn>
+                <router-link to="/detail">
+                    <v-btn icon value="주소검색" large>
+                        <v-icon>search</v-icon>
+                    </v-btn>
+                </router-link>
                 <v-btn icon @click="getCurrentPos" large>
-                <v-icon>mdi-crosshairs-gps</v-icon>
+                    <v-icon>mdi-crosshairs-gps</v-icon>
                 </v-btn>
             </div>
         </v-app-bar>
 
-    <!-- <v-main id="map">
-    </v-main> -->
-
         <!--지도 나타낼 부분-->
         <v-main id="map">
-        <v-btn @click="fnGo" color="primary" dark fixed bottom right fab>
-            <v-icon>add</v-icon>
-        </v-btn>
-    </v-main>
+            <router-link to="/add">
+                <v-btn color="primary" dark fixed bottom right fab>
+                    <v-icon>add</v-icon>
+                </v-btn>
+            </router-link>
+        </v-main>
     
         <!--장소추가 페이지 : dialog
         <v-row justify="center">
@@ -82,13 +83,17 @@
         width: 100vw;
         height: 100vh;
     }
-    .dialog-bottom-transition-enter-active,
+    /* .dialog-bottom-transition-enter-active,
     .dialog-bottom-transition-leave-active{
         transition: transform .2s ease-in-out;
-    }
+    } */
 </style>
+
 <script>
 // import Sdata from '@/assets/seoul_toilet.json'
+import Add from '@/components/add_page.vue'
+import Detail from '@/components/detail_page.vue'
+
 
 /* https://soa-memo.tistory.com/m/41 참조 */
 export default{
@@ -109,6 +114,10 @@ export default{
             },
             valid: false,
         }
+    },
+    components: {
+        Add,
+        Detail,
     },
     mounted(){
         if(window.kakao && window.kakao.maps){
@@ -133,9 +142,6 @@ export default{
     */
     
     methods: {
-        fnGo(){
-            this.$router.push({ name: "main_page" })
-        },
         /// app-bar 주소찾기 팝업
         /* 
         fnOpenPost(){
@@ -190,6 +196,7 @@ export default{
         */
         
         /// dialog 주소찾기
+        /*
         staticOpenpost(){
             new window.daum.Postcode({
                 oncomplete: function(data){
@@ -223,14 +230,8 @@ export default{
                 }
             }).open()
         },
+        */
         
-
-        /// 유효성 검사
-        async validate () {
-            const { valid } = await this.$refs.form.validate()
-            console.log(valid)
-            if (valid) alert('Ok')
-        },
 
         /// 스크립트에 지도api 추가
         loadScript(){
@@ -255,36 +256,8 @@ export default{
             };
 
             /// 지도 생성 및 객체 리턴
-            this.map2 = new window.kakao.maps.Map(container, options);
+            this.map = new window.kakao.maps.Map(container, options);
             
-            //장소검색객체
-            var ps = new kakao.maps.services.Places(); 
-            
-            ps.keywordSearch('강남역', placesSearchCB);
-
-            function placesSearchCB (data, status, pagination) {
-                if (status === kakao.maps.services.Status.OK) {
-
-                    var bounds = new kakao.maps.LatLngBounds();
-
-                    for (var i=0; i<data.length; i++) {
-                        bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-                    }       
-
-                    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-                    map.setBounds(bounds);
-                } 
-            }
-
-            // function displayMarker(place) {
-        
-            //     //마커를 생성하고 지도에 표시합니다
-            //     var marker = new kakao.maps.Marker({
-            //         map: map,
-            //         position: new kakao.maps.LatLng(place.y, place.x) 
-            //     });
-
-            // }
             /*
             주소-좌표 변환 객체 생성
             var geocoder = new daum.maps.services.Geocoder();
@@ -312,7 +285,7 @@ export default{
 
                     var marker = new kakao.maps.Marker({
                         position: latlng,
-                        map:this.map2,
+                        map:this.map,
                         image: markerImg,
                         
                         title: toilets[i].FNAME
@@ -323,8 +296,6 @@ export default{
             })
 
             //var positions = []
-
-            
 
             /*
             for (var i=0; i <positions.length; i++){
