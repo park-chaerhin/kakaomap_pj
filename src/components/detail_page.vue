@@ -4,6 +4,7 @@
     chat gpt
     https://goodteacher.tistory.com/432    
 -->
+<!--
 <template>
     <v-container fluid>
         <div class="map_wrap">
@@ -48,12 +49,10 @@
         </div>
     </v-container>
 </template>
-
 <style>
 .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
 .markerbg {float:left;position:absolute;width:36px; height:37px;margin:10px 0 0 10px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;}
 </style>
-
 <script>
 export default {
     data() {
@@ -146,3 +145,67 @@ export default {
     },
 };
 </script>
+-->
+
+
+<!-- <template>
+    <div>
+        <div id="map" style="width: 100%; height: 350px;"></div>
+    </div>
+</template>
+
+<script>
+export default {
+    mounted() {
+        // this.initializeMap();
+        if(window.kakao && window.kakao.maps){
+            this.initializeMap();
+        } else{
+            window.onload = () => {
+                this.initializeMap();
+            };
+        }
+    },
+    /* 
+    methods: {
+        initializeMap(){
+            const mapContainer = document.getElementById('map');
+            const mapOption = {
+                    center: new window.kakao.maps.LatLng(37.566826, 126.9786567),
+                    level: 3
+            };
+    
+            var map = new window.kakao.maps.Map(mapContainer, mapOption);
+
+            var ps = new window.kakao.maps.services.Places();
+            const infowindow = new window.kakao.maps.InfoWindow({zIndex: 1});
+            
+            ps.keywordSearch('이태원 맛집', (data, status, pagination) => {
+                if (status === window.kakao.maps.services.Status.OK) {
+                    const bounds = new window.kakao.maps.LatLngBounds();
+            
+                    for (let i = 0; i < data.length; i++) {
+                        this.displayMarker(data[i], map, bounds, infowindow);
+                    }
+        
+                    map.setBounds(bounds);
+                }
+            });
+        },
+        // 지도에 마커를 표시하는 함수입니다
+        displayMarker(place, map, bounds) {
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(place.y, place.x)
+            });
+    
+            kakao.maps.event.addListener(marker, 'click', function() {
+                this.infowindow.setContent('<div style="padding: 5px; font-size: 12px;">' + place.place_name + '</div>');
+                infowindow.open(map, marker);
+            });
+    
+            bounds.extend(new kakao.maps.LatLng(place.y, place.x));
+        }
+    }*/
+}
+</script>   -->
