@@ -1,6 +1,9 @@
 <!--
     1. geolocation 수정
     2. 장소 추가 '등록'하면 
+
+    https://spic.tistory.com/m/411 참고해서 '키워드로 장소 검색하기' 로 변경
+    https://itstory1592.tistory.com/52 참고해서 지도 중복? 해결
 -->
 <template>
     <v-app>
@@ -27,11 +30,11 @@
 
         <!--지도 나타낼 부분-->
         <v-main id="map">
-            <router-link to="/add">
+            <!-- <router-link to="/add">
                 <v-btn color="primary" dark fixed bottom right fab>
                     <v-icon>add</v-icon>
                 </v-btn>
-            </router-link>
+            </router-link> -->
         </v-main>
     
         <!--장소추가 페이지 : dialog
@@ -277,6 +280,7 @@ export default{
 
                 //마커 이미지
                 var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+                //var imgSrc = "/src/assets/marker.png" // /:최상위루트 ./:현재디렉터리 ../:상위디렉터리
 
                 for(var i=0; i< toilets.length; i++){
                     const latlng = new kakao.maps.LatLng(toilets[i].Y_WGS84, toilets[i].X_WGS84)
