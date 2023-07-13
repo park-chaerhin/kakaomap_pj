@@ -8,18 +8,23 @@ Vue.use(VueRouter)
 const routes = [
     {
       path: '/',
-      name: 'main_page',
-      component: () => import('../components/main_page.vue')
-    },
-    {
-      path: '/join',
-      name: 'join_page',
-      component: () => import('../components/join_page.vue')
+      name: 'intro_page',
+      component: () => import('../components/intro_page.vue')
     },
     {
       path: '/login',
       name: 'login_page',
       component: () => import('../components/login_page.vue')
+    },
+    {
+      path: '/main',
+      name: 'main_page',
+      component: () => import('../components/main_page.vue')
+    },
+    {
+      path: '/help',
+      name: 'help_page',
+      component: () => import('../components/help_page.vue')
     },
     {
       path: '/add',
