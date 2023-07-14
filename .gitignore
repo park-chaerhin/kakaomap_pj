@@ -22,3 +22,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 node_modules
+src/assets/경기도공중화장실현황(제공표준).json
