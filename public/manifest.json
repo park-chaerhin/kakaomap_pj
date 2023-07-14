@@ -1,6 +1,6 @@
 {
     "name": "서울 공공화장실 지도",
-    "short_name": "서울 공공화장실 지도",
+    "short_name": "공공화장실 지도",
     "description": "서울 공공화장실을 찾아보는 지도 웹앱",
     "icons": [
       {
@@ -17,6 +17,6 @@
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#2196f3"
+    "theme_color": "#ffffff"
   }
   

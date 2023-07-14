@@ -7,7 +7,7 @@
 -->
 <template>
     <v-app>
-        <v-app-bar app density="compact">
+        <v-app-bar color="orange" dark app density="compact">
             <router-link to="/">
                 <v-btn icon>
                 <v-icon>mdi-home</v-icon>
@@ -22,7 +22,7 @@
                         <v-icon>search</v-icon>
                     </v-btn>
                 </router-link>
-                <v-btn icon @click="getCurrentPos" large>
+                <v-btn icon large> <!-- @click="getCurrentPos"-->
                     <v-icon>mdi-crosshairs-gps</v-icon>
                 </v-btn>
             </div>
@@ -96,6 +96,7 @@
 // import Sdata from '@/assets/seoul_toilet.json'
 import Add from '@/components/add_page.vue'
 import Detail from '@/components/detail_page.vue'
+import data from '@/assets/경기도공중화장실현황(제공표준).json'
 
 
 /* https://soa-memo.tistory.com/m/41 참조 */
@@ -116,6 +117,8 @@ export default{
                 required: v => !!v || '필수 항목입니다.',
             },
             valid: false,
+
+            data
         }
     },
     components: {
@@ -130,6 +133,16 @@ export default{
             /// 없으면 스크립트 추가 후 맵 실행
             this.loadScript();
         }
+        /* Mixed content 문제
+        fetch('../assets/경기도공중화장실현황(제공표준).json')
+        .then(response => response.json())
+        .then(data => {
+            this.jsonData = data;
+        })
+        .catch(error=>{
+            console.error(error);
+        })
+        */
     },
 
     /*
@@ -254,50 +267,45 @@ export default{
             const options = {
                 /// 지도 생성 시 기본옵션
                 /// center: 지도의 중심좌표, level: 확대/축소 정도
-                center: new window.kakao.maps.LatLng(37.54134, 126.96213), 
+                center: new window.kakao.maps.LatLng(37.45532, 127.13762), 
                 level: 5,       
             };
 
             /// 지도 생성 및 객체 리턴
-            this.map = new window.kakao.maps.Map(container, options);
-            
-            /*
-            주소-좌표 변환 객체 생성
-            var geocoder = new daum.maps.services.Geocoder();
+            this.map = new kakao.maps.Map(container, options);
+
+            /* 경기도 화장실
+            PBCTLT_PLC_NM 화장실 이름 / REFINE_ROADNM_ADDR 도로명주소 /
+            MALE_WTRCLS_CNT 남.대 + MALE_UIL_CNT 남.소 / FEMALE_WTRCLS_CNT 여.대 / 
+            REFINE_WGS84_LAT 위도 / REFINE_WGS84_LOGT 경도 
             */
+            const Sdata = this.data['Stoilet']
+            
 
-            /// 데이터 : 1~1000 (총 데이터 양: 4938)
-            const url = "http://openapi.seoul.go.kr:8088/454b476547636f6634354653574c7a/json/SearchPublicToiletPOIService/1/1000/"
+            //마커 이미지
+            var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+            //var imgSrc = "/src/assets/marker.png" // /:최상위루트 ./:현재디렉터리 ../:상위디렉터리
 
-            fetch(url)
-            .then((res)=>res.json())
-            .then((myJson) => {
-                //var markers = []
-                //const toilets = JSON.stringify(myJson, null, 1)
-                //console.log(typeof myJson)
-                const toilets = myJson.SearchPublicToiletPOIService.row
-                //console.log(toilets)
+                
+            for(var i=0; i< Sdata.length; i++){
+                const latlng = new kakao.maps.LatLng(Sdata[i].REFINE_WGS84_LAT, Sdata[i].REFINE_WGS84_LOGT)
+                var imgSize = new kakao.maps.Size(24,35)
+                var imgOption = {offset: new kakao.maps.Point(13, 40)}
 
-                //마커 이미지
-                var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
-                //var imgSrc = "/src/assets/marker.png" // /:최상위루트 ./:현재디렉터리 ../:상위디렉터리
+                var markerImg = new kakao.maps.MarkerImage(imgSrc, imgSize, imgOption)
 
-                for(var i=0; i< toilets.length; i++){
-                    const latlng = new kakao.maps.LatLng(toilets[i].Y_WGS84, toilets[i].X_WGS84)
-                    var imgSize = new kakao.maps.Size(24,35)
-                    var markerImg = new kakao.maps.MarkerImage(imgSrc, imgSize)
-
-                    var marker = new kakao.maps.Marker({
-                        position: latlng,
-                        map:this.map,
-                        image: markerImg,
+                var marker = new kakao.maps.Marker({
+                    position: latlng,
+                    map:this.map,
+                    image: markerImg,
                         
-                        title: toilets[i].FNAME
-                    })
-                    // markers
+                    title: Sdata[i].PBCTLT_PLC_NM
+                })
+                marker
                     //marker.push()
                 }
-            })
+                
+            }
 
             //var positions = []
 
@@ -345,28 +353,28 @@ export default{
 
             ///데이터 한땀한땀
             /*
-            var positions = [
-                {
-                    title: '진원프라자',
-                    latlng: new kakao.maps.LatLng(37.656937, 126.771835)
-                },
-                {
-                    title: '웨스턴돔 타워',
-                    latlng: new kakao.maps.LatLng(37.655893, 126.771970)
-                },
-                {
-                    title: '호수빌딩',
-                    latlng: new kakao.maps.LatLng(37.656727, 126.7713048)
-                },
-            ]
+                var positions = [
+                    {
+                        title: '진원프라자',
+                        latlng: new kakao.maps.LatLng(37.656937, 126.771835)
+                    },
+                    {
+                        title: '웨스턴돔 타워',
+                        latlng: new kakao.maps.LatLng(37.655893, 126.771970)
+                    },
+                    {
+                        title: '호수빌딩',
+                        latlng: new kakao.maps.LatLng(37.656727, 126.7713048)
+                    },
+                ]
 
-            for (var i=0; i < positions.length; i++){
-                var marker = new kakao.maps.Marker({
-                    map: this.map,
-                    position: positions[i].latlng,
-                    title: positions[i].title
-                });
-            }
+                for (var i=0; i < positions.length; i++){
+                    var marker = new kakao.maps.Marker({
+                        map: this.map,
+                        position: positions[i].latlng,
+                        title: positions[i].title
+                    });
+                }
             */
 
             /// 마커 생성!///
@@ -427,6 +435,7 @@ export default{
 
         },
 
+        /*
         getCurrentPos(){
             if (navigator.geolocation){
 
@@ -454,7 +463,8 @@ export default{
             }
             return true
         },
+        */
 
-    },
-}
+    }
+
 </script>
