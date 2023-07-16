@@ -7,7 +7,7 @@
 -->
 <template>
     <v-app>
-        <v-app-bar color="orange" dark app density="compact">
+        <v-app-bar color="#2c38a8" dark app density="compact">
             <router-link to="/">
                 <v-btn icon>
                 <v-icon>mdi-home</v-icon>
@@ -17,11 +17,11 @@
             <div v-if="$route.name=='main_page'" style="display: flex;">
                 <!--<v-text-field id="address" class="mt-4" clearable label="검색어를 입력하세요." variant="outlined"></v-text-field>-->
                 <!--<v-btn icon @click="fnOpenPost" value="주소검색" large >-->
-                <router-link to="/detail">
+                <!-- <router-link to="/detail">
                     <v-btn icon value="주소검색" large>
                         <v-icon>search</v-icon>
                     </v-btn>
-                </router-link>
+                </router-link> -->
                 <v-btn icon large> <!-- @click="getCurrentPos"-->
                     <v-icon>mdi-crosshairs-gps</v-icon>
                 </v-btn>

@@ -1,30 +1,16 @@
-<!--<template>
-    <div>
-        <li v-for="item in DATA" :key="item.poi_id">{{ item.fname }} // {{ item.y_wgs84 }} // {{ item.x_wgs84 }}</li>
-    </div>
-</template>
-
-<script>
-import Stoilet from '@/assets/seoul_toilet.json'
-
-export default{
-    data(){
-        return {
-            DATA: Stoilet
-        }
-    },
-}
-</script>-->
-
 <template>
     <v-container flow>
         <v-row>
-            <v-col class="text-center" cols="8" offset="2" sm="6" offset-sm="3">
+            <v-col cols="12" class="text-center mt-5">
+                <h1 class="display-1 my-1">로그인</h1>
+            </v-col>
+
+            <v-col class="text-center mt-5" cols="8" offset="3" sm="6" offset-sm="3">
                 <form @submit.prevent="fnDoLogin">
-                    <v-text-field label="email" name="email" v-model="sEmail" type="email" required></v-text-field>
-                    <v-text-field label="password" name="password" v-model="sPassword" type="password" required></v-text-field>
-                    <v-btn type="submit">로그인</v-btn>
-                    <v-alert class="mt-3" type="error" dismissible v-model="bAlert">{{ fnGetErrMsg }}</v-alert>
+                    <v-text-field label="이메일" name="email" v-model="sEmail" type="email" required></v-text-field>
+                    <v-text-field label="비밀번호" name="password" v-model="sPassword" type="password" required></v-text-field>
+    
+                    <v-btn type="submit" color="">로그인</v-btn>
                 </form>
             </v-col>
         </v-row>
@@ -41,25 +27,15 @@ export default{
         }
     },
     computed: {
-        fnGetErrMsg(){
-            return this.$store.getters.fnGetErrorMessage
-        }
     },
     methods: {
         fnDoLogin(){
-            this.$store.dispatch('fnDoLogin', {
-                pEmail : this.sEmail,
-                pPassword: this.sPassword
-            })
-        }
+            alert('로그인 되었습니다.')
+            // this.$store.dispatch('fnDoLogin', {
+            //     pEmail : this.sEmail,
+            //     pPassword: this.sPassword
+            // })
+        },
     },
-    watch: {
-        fnGetErrMsg(Msg){
-            if(Msg) this.bAlert = true
-        },
-        bAlert(Value){
-            if(Value==false) this.$store.commit('fnSetErrorMessage','')
-        },
-    }
 }
 </script>

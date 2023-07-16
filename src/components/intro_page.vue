@@ -1,63 +1,44 @@
 <!--intro-->
 <template>
-  <v-container>
-    <router-link to="/login">
-      <v-btn fixed bottom right fab>
-          <v-icon>mdi-login</v-icon>
-      </v-btn>
-    </router-link>
+  <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto px-4" elevation="4" height="500" rounded max-width="800" width="100%">
+    <div>
+      <router-link to="/login">
+        <v-btn fixed bottom right fab>
+            <v-icon>mdi-login</v-icon>
+        </v-btn>
+      </router-link>
 
-    <v-row align="center" justify="center">
-      <v-col cols="12" text="center">
-        <v-img :src="require('../assets/thumb.jpg')" class="my-3" contain height="200"/>
-      </v-col>
+      <v-row class="d-flex justify-center align-center">
+        <v-col cols="12" text="center">
+          <v-img :src="require('../assets/thumb.jpg')" class="my-3" contain height="200"/>
+        </v-col>
 
-      <v-col class="mb-4" text="center">
-        <h1 class="display-2 font-weight-bold mb-3">
-          내 주변의 편안함
-        </h1>
-      </v-col>
+        <v-col class="mb-4 d-flex justify-center mb-6" text="center">
+          <h1 class="display-2 font-weight-bold">
+            내 주변의 편안함
+          </h1>
+        </v-col>
 
-      <v-col cols="12" text="center">
-        <router-link to="/main">
-          <v-btn class="my-3 block large">화장실지도</v-btn>
-        </router-link>
-      </v-col>
+        <v-col cols="12" text="center">
+          <router-link to="/main">
+            <v-btn class="my-3 block large">화장실지도</v-btn>
+          </router-link>
+        </v-col>
 
-      <v-col cols="12" text="center">
-        <router-link to="/add">
-          <v-btn class="my-3 block large">화장실등록</v-btn>
-        </router-link>
-      </v-col>
-      
-      <v-col cols="12" text="center">
-        <router-link to="/help">
-          <v-btn class="my-3 block large">문의하기</v-btn>
-        </router-link>
-      </v-col>
-
-      <!-- <v-col>
-          <v-btn @click="dialog = true">문의하기</v-btn>
-
-          <v-dialog v-model="dialog" transition="dialog-bottom-transition" width="auto">
-            <v-card>
-              <v-toolbar title="문의하기/건의하기"></v-toolbar>
-              
-              <v-card-text>
-                <v-text-field placeholder="예)abc12@gmail.com" variant="underlined" v-model="form.email" label="이메일" required :rules="[ rule.required, rule.email,]" hint="연락 가능한 이메일을 입력해주세요."></v-text-field>
-
-                <v-responsive>
-                  <v-textarea v-model="form.inquiry" placeholder="내용을 입력해주세요~" required :rules="[rule.required]" type="inquiry"></v-textarea>
-                </v-responsive>
-              </v-card-text>
-              <v-card-actions class="justify-end">
-                <v-btn variant="text" @click="dialog = false">전송</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-      </v-col> -->
-    </v-row>
-  </v-container>
+        <v-col cols="12" text="center">
+          <router-link to="/add">
+            <v-btn class="my-3 block large">화장실등록</v-btn>
+          </router-link>
+        </v-col>
+        
+        <v-col cols="12" text="center">
+          <router-link to="/help">
+            <v-btn class="my-3 block large">문의하기</v-btn>
+          </router-link>
+        </v-col>
+      </v-row>
+    </div>
+  </v-sheet>
 </template>
 
 <script>

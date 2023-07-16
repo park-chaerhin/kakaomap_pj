@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
-
+// import firebase from 'firebase/compat/app'
 
 Vue.use(VueRouter)
+
 
 const routes = [
     {
@@ -24,18 +24,18 @@ const routes = [
     {
       path: '/help',
       name: 'help_page',
-      component: () => import('../components/help_page.vue')
+      component: () => import('../components/help_page.vue'),
+      // meta: {bAuth: true}
     },
     {
       path: '/add',
       name: 'add_page',
-      component: () => import('../components/add_page.vue')
-      ,
+      component: () => import('../components/add_page.vue'),
         /*
         인증결과가 true여야 등록페이지 갈 수 있어
         -> 비정상적 접근 : 로그인 페이지로 유도 (router.beforeEach()에 정의)
-        meta: {bAuth: true}  
         */
+      // meta: {bAuth: true}  
     },
     {
       path: '/detail',
@@ -48,5 +48,14 @@ const routes = [
     routes
   })
 
-
+  // router.beforeEach((to, from, next) => {
+  //   const bNeedAuth = to.matched.some(record => record.meta.bAuth)
+  //   const bCheckAuth = firebase.auth().currentUser /// : 현재 사용자가 있냐?
+  //   if(bNeedAuth && !bCheckAuth) { /// : 현재사용자가 인증페이지 데이터베이스에 없으면~
+  //     next('/login') /// foreach 완료 이후 실행method = next 
+  //   } else{ /// : 인증받은 사용자는 다음 라우터 주소로 이동~
+  //     next()
+  //   }
+  // })
+  
 export default router

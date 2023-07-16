@@ -70,6 +70,35 @@ export default{
             })
         },
 
+        //구글 계정 회원 로그인(팝업)
+        fnDoGoogleLogin_Popup({commit}) {
+            commit('fnSetLoading', true)
+        
+            //파이어베이스에 구글회원 로그인 인증 처리 요청
+            //로그인제공자객체를 생성
+            var oProvider = new firebase.auth.GoogleAuthProvider();
+        
+            //오픈 계정의 범위 설정
+            oProvider.addScope('profile');
+            oProvider.addScope('email');
+            firebase.auth().signInWithPopup(oProvider)
+            .then(pUserInfo => {
+                commit('fnSetUser', {
+                    id: pUserInfo.user.uid,  
+                    name: pUserInfo.user.displayName,
+                    email: pUserInfo.user.email,
+                    photoURL: pUserInfo.user.photoURL
+                })
+                commit('fnSetLoading', false)  //시간걸림 상태 해제
+                commit('fnSetErrorMessage', '')  //에러메세지 초기화
+                router.push('/main')  //로그인 후 화면으로 이동 
+            })
+            .catch(err => {
+                commit('fnSetErrorMessage', err.message)
+                commit('fnSetLoading', false)
+            })
+        },
+        
         /// 자동로그인처리
         fnDoLoginAuto({commit}, pUserInfo){
             commit('fnSetUser',{
@@ -77,7 +106,7 @@ export default{
             })
             commit('fnSetLoading', false)
             commit('fnSetErrorMessage', '')
-    },
+        },
 
         /// 로그아웃
         fnDoLogout({commit}){
