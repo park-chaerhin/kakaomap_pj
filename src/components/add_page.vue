@@ -131,7 +131,7 @@
         alert("정상 등록되었습니다.");
       },
       redirectToLink() {
-        this.$router.push({ name: "main_page" });
+        this.$router.push({ name: "my_page" });
       },
     },
   };
