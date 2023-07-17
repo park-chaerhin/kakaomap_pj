@@ -60,7 +60,7 @@ export default {
             alert("제출되었습니다. 빠른 시일안에 연락 드리겠습니다.");
         },
         redirectToLink() {
-            this.$router.push({ name: "main_page" });
+            this.$router.push({ name: "intro_page" });
         },
     },
 };
