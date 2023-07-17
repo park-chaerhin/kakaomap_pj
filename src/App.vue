@@ -1,4 +1,4 @@
-<template>
+ <template>
   <v-app>
     <!--반응형 중단점이 데스크톱(lg) 이상일 때 탐색 서랍을 툴바 아래 출력 : clipped-->
     <v-navigation-drawer v-model="drawer" app>
@@ -10,9 +10,8 @@
           </v-list-item-action>
           <v-list-item-title v-text="item.title"></v-list-item-title>
         </v-list-item>
-
-        <!--로그인 된 경우만 로그아웃 버튼을 표시함-->
-        <v-list-item @click="fnDoLogout" v-if="fnGetAuthStatus">
+               <!--로그인 된 경우만 로그아웃 버튼을 표시함-->
+               <v-list-item @click="fnDoLogout" v-if="fnGetAuthStatus">
           <v-list-item-action>
             <v-icon>mdi-arrow-right-bold-box-outline</v-icon>
           </v-list-item-action>
@@ -20,7 +19,6 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-app-bar app clipped-left color="#2c38a8" dark>
       <!--햄버거 아이콘은 반응형 크기가 sm이상일 때 숨김-->
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="hidden-sm-and-up"></v-app-bar-nav-icon>
@@ -46,12 +44,7 @@
           로그아웃
         </v-btn>
       </v-toolbar-items>
-    </v-app-bar>
-
-    <v-main> <router-view /> </v-main>
-  </v-app>
-</template>
-
+      <v-main> <router-view /> </v-main>
 
 <script>
   export default {
