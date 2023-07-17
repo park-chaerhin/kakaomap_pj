@@ -20,7 +20,7 @@
             </v-form>
 
             <v-card-actions>
-              <v-btn outlined color="#2c38a8" @click="$router.go(-1)">뒤로</v-btn>
+              <v-btn outlined color="#2c38a8" @click="redirectToLink">뒤로</v-btn>
               <v-spacer></v-spacer>
               <v-btn :disabled="!valid" outlined color="#2c38a8" @click="submit">등록</v-btn>
             </v-card-actions>
@@ -42,7 +42,6 @@
       return {
           name: "",
           address: "",
-          // email: "",
 
           map: null,
           marker: null,
@@ -51,7 +50,6 @@
           inquiry: "",
           rule: {
             required: (v) => !!v || "필수 입력 항목입니다.",
-            // email: (v) => /.+@.+\..+/.test(v) || "이메일 형식에 맞게 입력하세요.",
           },
           valid: false
       }
@@ -91,11 +89,11 @@
         this.geocoder = new window.kakao.maps.services.Geocoder();
 
         // this.map = map;
-        // this.marker = new window.kakao.maps.Marker({
-        //   position: new window.kakao.maps.LatLng(37.537187, 127.005476),
-        //   map: this.map,
-        // });
-        // this.geocoder = geocoder;
+        this.marker = new window.kakao.maps.Marker({
+          position: new window.kakao.maps.LatLng(37.537187, 127.005476),
+          map: this.map,
+        });
+        this.geocoder = geocoder;
       },
       searchAddress() {
         new daum.Postcode({
@@ -131,7 +129,7 @@
         alert("정상 등록되었습니다.");
       },
       redirectToLink() {
-        this.$router.push({ name: "my_page" });
+        this.$router.push({ name: "intro_page" });
       },
     },
   };
