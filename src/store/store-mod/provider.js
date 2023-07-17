@@ -134,7 +134,7 @@ export default{
             //파이어베이스에 로그아웃 요청
             firebase.auth().signOut()  /// 사용자'만' 로그아웃~
             commit('fnSetUser', null)  //스토어에 계정정보 초기화
-            router.push('/')  //첫 화면으로 이동
+            router.push('/intro')  //첫 화면으로 이동
         }
     }
 }

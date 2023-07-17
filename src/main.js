@@ -5,6 +5,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 
+// import {rtdbPlugin} from 'vuefire'
+// Vue.use(rtdbPlugin)
+
 //파이어베이스 앱 객체 모듈 가져오기
 import firebase from 'firebase/compat/app'
 import '@/datasources/firebase'

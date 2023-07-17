@@ -11,6 +11,11 @@ const routes = [
     name: 'intro_page',
     component: () => import('../components/intro_page.vue')
   },
+  // {
+  //   path: '/detail',
+  //   name: 'detail_page',
+  //   component: () => import('../components/detail_page.vue')
+  // },
   {
     path: '/login',
     name: 'login_page',
@@ -56,11 +61,11 @@ const router = new VueRouter({
 //라우터 이동에 개입하여 인증이 필요한 경우 login 페이지로 전환
 router.beforeEach((to, from, next) => {
   const bNeedAuth = to.matched.some(record => record.meta.bAuth)
-  const bCheckAuth = firebase.auth().currentUser /// : 현재 사용자가 있냐?
-  if(bNeedAuth && !bCheckAuth) { /// : 현재사용자가 인증페이지 데이터베이스에 없으면~
-    next('/login') /// foreach 완료 이후 실행method = next 
-  } else{ /// : 인증받은 사용자는 다음 라우터 주소로 이동~
-    next('/my')
+  const bCheckAuth = firebase.auth().currentUser 
+  if(bNeedAuth && !bCheckAuth) { 
+    next('/login') 
+  } else{ 
+    next()
   }
 })
 

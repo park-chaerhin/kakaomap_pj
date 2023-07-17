@@ -25,8 +25,5 @@ export default{
         fnGetErrorMessage(state){
             return state.sErrorMessage
         }
-    },
-    actions:{
-        /// 외부 데이터 연동~
     }
 }
