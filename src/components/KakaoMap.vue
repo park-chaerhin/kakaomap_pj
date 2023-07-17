@@ -18,6 +18,12 @@ export default{
             data,
         }
     },
+    props: {
+        toiletCoordinates:{
+            type: Array,
+            required: true
+        }
+    },
     mounted(){
         if (window.kakao && window.kakao.maps){
             this.loadMap();
@@ -30,6 +36,7 @@ export default{
             const script = document.createElement('script');
             script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=a94b20af546ccbc16088bd33eaf12dc5&autoload=false&libraries=services'
             // RangeError: Maximum call stack size exceeded 해결위해 load안에 묶기
+            // script.onload = () => window.kakao.maps.load(this.loadMap);
             script.onload = () => window.kakao.maps.load(() => this.loadMap());
             
             document.head.appendChild(script);
@@ -40,8 +47,33 @@ export default{
                 center : new window.kakao.maps.LatLng(37.45532, 127.13762),
                 level: 5
             }
-
             this.map = new window.kakao.maps.Map(container, options);
+
+            /* 서울 화장실 
+            const url = "http://openapi.seoul.go.kr:8088/454b476547636f6634354653574c7a/json/SearchPublicToiletPOIService/1/100/";
+
+            fetch(url)
+            .then((res)=>res.json())
+            .then((myJson) => {
+                const toilets = myJson.SearchPublicToiletPOIService.row
+                //console.log(toilets)            
+            
+                var imgSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"
+
+                for(var i=0; i< toilets.length; i++){
+                    const latlng = new kakao.maps.LatLng(toilets[i].Y_WGS84, toilets[i].X_WGS84)
+                    var imgSize = new kakao.maps.Size(24,35)
+                    var markerImg = new kakao.maps.MarkerImage(imgSrc, imgSize)
+                    var marker = new kakao.maps.Marker({
+                        position: latlng,
+                        map:this.map,
+                        image: markerImg,
+                        title: toilets[i].FNAME
+                    })
+                    // markers                                        
+                }
+            })
+            */
 
             /* 
             ----경기도 화장실
@@ -54,8 +86,9 @@ export default{
             var imgSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png'
 
             for(var i=0; Sdata.length; i++){
-                var latlng = new kakao.maps.LatLng(Sdata[i].REFINE_WGS84_LAT, Sdata[i].REFINE_WGS84_LOGT)
+                var latlng = new kakao.maps.LatLng(Sdata[i].REFINE_WGS84_LAT , Sdata[i].REFINE_WGS84_LOGT)
                 var imgSize = new kakao.maps.Size(24,35)
+            
 
                 var markerImg = new kakao.maps.MarkerImage(imgSrc, imgSize)
 
@@ -65,12 +98,30 @@ export default{
                     image: markerImg,
                     title: Sdata[i].PBCTLT_PLC_NM
                 })
-                marker
+                
+                this.addMarkerClickListener(marker, Sdata[i]);
             }
 
             this.loadMarker();
         },
-        
+
+        addMarkerClickListener(marker, data){
+            window.kakao.maps.event.addListener(marker, 'click', ()=>{
+                var iwContent = `
+                    <div style="padding:5px;font-size:0.7rem">
+                        <strong>${data.PBCTLT_PLC_NM}</strong><br />
+                        ${data.REFINE_ROADNM_ADDR}
+                        // <a href="/detail" target="_blank" class="link">자세히</a>
+                    </div>`;
+
+                var infowindow = new window.kakao.maps.InfoWindow({
+                    content: iwContent,
+                    removable: true,
+                });
+                infowindow.open(this.map, marker);
+            });
+        },
+
         loadMarker(){
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
@@ -80,12 +131,12 @@ export default{
                     var locPosition = new kakao.maps.LatLng(lat, lon);
                     var message = '<div style="padding:5px;">현재위치</div>';
 
-                    displayMarker(locPosition, message);
+                    this.displayMarker(locPosition, message);
                 });
             } else {
                 var locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
                 var message = 'geolocation을 사용할 수 없어요..';
-                displayMarker(locPosition, message);
+                this.displayMarker(locPosition, message);
             }
         },
 
