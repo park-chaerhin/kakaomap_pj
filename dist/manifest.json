@@ -1,0 +1,1 @@
+{"name":"화장실지도","short_name":"화장실지도","theme_color":"#fff","icons":[{"src":"./img/icons/favicon2.png","sizes":"192x192","type":"image/png"},{"src":"./img/icons/favicon2.png","sizes":"512x512","type":"image/png"}],"start_url":"/","display":"standalone","background_color":"#fff"}

@@ -32,15 +32,18 @@ export default{
         }
     },
     methods: {
+        // index.html > head 에 카카오맵api 스크립트 추가
         loadScript(){
             const script = document.createElement('script');
             script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=a94b20af546ccbc16088bd33eaf12dc5&autoload=false&libraries=services'
-            // RangeError: Maximum call stack size exceeded 해결위해 load안에 묶기
+            // RangeError: Maximum call stack size exceeded ?
             // script.onload = () => window.kakao.maps.load(this.loadMap);
             script.onload = () => window.kakao.maps.load(() => this.loadMap());
             
             document.head.appendChild(script);
         },
+
+        // 지도 불러오기
         loadMap(){
             const container = document.getElementById('map');
             const options = {
@@ -105,14 +108,16 @@ export default{
             this.loadMarker();
         },
 
+        // marker 클릭 시 주소, 상세보기
         addMarkerClickListener(marker, data){
             window.kakao.maps.event.addListener(marker, 'click', ()=>{
                 var iwContent = `
-                    <div style="padding:5px;font-size:0.7rem">
+                    <div style="padding:2em;font-size:0.7em">
                         <strong>${data.PBCTLT_PLC_NM}</strong><br />
                         ${data.REFINE_ROADNM_ADDR}
-                        // <a href="/detail" target="_blank" class="link">자세히</a>
-                    </div>`;
+                    </div>
+                    <div><a href="/detail" target="_blank" class="link">자세히</a></div>
+                    `;
 
                 var infowindow = new window.kakao.maps.InfoWindow({
                     content: iwContent,
@@ -122,6 +127,7 @@ export default{
             });
         },
 
+        // 현재위치
         loadMarker(){
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
@@ -161,3 +167,9 @@ export default{
     }
 }
 </script>
+
+<style>
+a{
+    text-decoration: none;
+}
+</style>

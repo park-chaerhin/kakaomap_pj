@@ -11,11 +11,11 @@ const routes = [
     name: 'intro_page',
     component: () => import('../components/intro_page.vue')
   },
-  // {
-  //   path: '/detail',
-  //   name: 'detail_page',
-  //   component: () => import('../components/detail_page.vue')
-  // },
+  {
+    path: '/detail',
+    name: 'detail_page',
+    component: () => import('../components/detail_page.vue')
+  },
   {
     path: '/login',
     name: 'login_page',
@@ -55,6 +55,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
